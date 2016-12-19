@@ -51,13 +51,13 @@ describe AnimatedGifDetector do
   end
 
   context 'when supplied with a non-gif image' do
-    let(:detector) { AnimatedGifDetector.new(StringIO.new('bad-data'), terminate_after_first_frame: true) }
+    let(:detector) { AnimatedGifDetector.new(StringIO.new('bad-data')) }
 
     it { expect { detector.animated? }.to raise_error(AnimatedGifDetector::UnrecognizedFileFormatException) }
   end
 
   context 'when supplied with a corrupted GIF image' do
-    let(:detector) { AnimatedGifDetector.new(StringIO.new('GIF89a then-bad-data'), terminate_after_first_frame: true) }
+    let(:detector) { AnimatedGifDetector.new(StringIO.new('GIF89a then-bad-data')) }
 
     it { expect { detector.animated? }.to raise_error(AnimatedGifDetector::EOFWithoutFrameException) }
   end

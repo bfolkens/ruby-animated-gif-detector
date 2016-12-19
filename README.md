@@ -1,8 +1,8 @@
+[![Build Status](https://travis-ci.org/bfolkens/ruby-animated-gif-detector.svg?branch=master)](https://travis-ci.org/bfolkens/ruby-animated-gif-detector)
+
 # AnimatedGifDetector
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/animated_gif_detector`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+A simple utility to determine if a GIF is animated, and how many frames it contains.  Only 2 frames are needed to determine if the GIF is "animated", so the user has the option to specify an option to return immediately or keep counting frames.  Designed for use on a stream to avoid unnecessary memory usage.
 
 ## Installation
 
@@ -22,7 +22,20 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+One-liner:
+
+```ruby
+AnimatedGifDetector.new(File.open('your_image.gif', 'rb')).animated?
+```
+
+Customizable:
+
+```ruby
+io = File.open('your_image.gif', 'rb')
+detector = AnimatedGifDetector.new(io, terminate_after: false)
+detector.animated? # true
+detector.frames # 3
+```
 
 ## Development
 
@@ -32,5 +45,4 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/animated_gif_detector.
-
+Bug reports and pull requests are welcome on GitHub at https://github.com/bfolkens/animated_gif_detector.
