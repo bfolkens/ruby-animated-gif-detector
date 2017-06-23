@@ -24,6 +24,23 @@ describe AnimatedGifDetector do
     end
   end
 
+  context 'works over multiple calls' do
+    let(:detector) { AnimatedGifDetector.new(animated_file, buffer_size: 24) }
+
+    it 'memoizes the result of animated' do
+      expect(detector.animated?).to be true
+      expect(detector.animated?).to be true
+    end
+
+    it 'rewinds the file' do
+      detector1 = AnimatedGifDetector.new(animated_file, buffer_size: 24)
+      expect(detector1.animated?).to be true
+
+      detector2 = AnimatedGifDetector.new(animated_file, buffer_size: 24)
+      expect(detector2.animated?).to be true
+    end
+  end
+
   context 'when supplied with a fixed image' do
     let(:detector) { AnimatedGifDetector.new(fixed_file) }
 

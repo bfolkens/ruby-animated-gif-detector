@@ -19,21 +19,29 @@ class AnimatedGifDetector
   end
 
   def animated?
-    raise UnrecognizedFileFormatException unless @stream.read(3) == 'GIF'
+    return @animated if defined? @animated
+    @animated = begin
+      raise UnrecognizedFileFormatException unless @stream.read(3) == 'GIF'
 
-    lookback = ''
-    animated = false
-    while data = @stream.read(@options[:buffer_size])
-      @frames += count_substring_matches(lookback + data, BLOCK_TERMINATOR + GRAPHIC_CONTROL_EXTENSION_MAGIC)
-      animated = @frames > 1
+      lookback = ''
+      animated = false
+      while data = @stream.read(@options[:buffer_size])
+        @frames += count_substring_matches(lookback + data, BLOCK_TERMINATOR + GRAPHIC_CONTROL_EXTENSION_MAGIC)
+        animated = @frames > 1
 
-      return true if @options[:terminate_after] and animated
+        if @options[:terminate_after] && animated
+          @animated = true
+          return true
+        end
 
-      lookback = last_characters(data, BLOCK_SIZE - 1)
+        lookback = last_characters(data, BLOCK_SIZE - 1)
+      end
+
+      raise EOFWithoutFrameException if @frames == 0
+      animated
     end
-
-    raise EOFWithoutFrameException if @frames == 0
-    return animated
+  ensure
+    @stream.rewind
   end
 
   private
